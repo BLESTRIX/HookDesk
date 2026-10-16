@@ -1,0 +1,26 @@
+:root { --ink: #142a35; --muted: #647985; --accent: #087d70; --paper: #f3f6f8; }
+body { background: var(--paper); color: var(--ink); font-family: system-ui, sans-serif; }
+a { color: #08766b; } a:hover { color: #04544c; }
+.sidebar { width: 235px; background: var(--ink); color: #c3d3da; position: fixed; inset: 0 auto 0 0; padding: 30px 18px; display: flex; flex-direction: column; }
+.brand { color: white; text-decoration: none; font-size: 1.55rem; font-weight: 750; letter-spacing: -.07em; }
+.brand-mark { background: #44d6b2; color: var(--ink); padding: .15em .35em; border-radius: 8px; margin-right: 8px; }
+.sidebar nav { margin-top: 40px; } .sidebar nav a { display: block; color: #becfd6; padding: 11px 15px; margin-bottom: 5px; border-radius: 7px; text-decoration: none; font-size: .94rem; }
+.sidebar nav a:hover, .sidebar nav a.active { color: white; background: #29414c; }
+.sidebar-footer { margin-top: auto; font-size: .8rem; }
+.workspace { margin-left: 235px; padding: 35px 44px; max-width: 1700px; }
+.topline { display: flex; justify-content: space-between; gap: 12px; align-items: center; padding-bottom: 24px; margin-bottom: 30px; border-bottom: 1px solid #dce5e9; font-size: .85rem; color: var(--muted); }
+h1 { font-size: 2rem; font-weight: 700; letter-spacing: -.045em; } h2 { font-size: 1.1rem; font-weight: 650; }
+.eyebrow { color: var(--accent); font-size: .73rem; text-transform: uppercase; letter-spacing: .14em; font-weight: 750; }
+.subtitle { color: var(--muted); margin-bottom: 30px; }
+.panel { background: white; border: 1px solid #dce5e9; border-radius: 10px; padding: 24px; margin-bottom: 22px; }
+.metric { padding: 22px; height: 100%; background: white; border: 1px solid #dce5e9; border-radius: 10px; } .metric-label { font-size: .8rem; color: var(--muted); } .metric-value { font-size: 2rem; font-weight: 700; letter-spacing: -.06em; } .metric-note { color: var(--muted); font-size: .73rem; }
+.btn-primary { --bs-btn-bg: #087d70; --bs-btn-border-color: #087d70; --bs-btn-hover-bg: #06675d; --bs-btn-hover-border-color: #06675d; --bs-btn-active-bg: #05574e; }
+.btn { font-size: .88rem; } .table { font-size: .88rem; --bs-table-color: var(--ink); } .table th { color: var(--muted); font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; padding: 14px 12px; white-space: nowrap; } .table td { padding: 16px 12px; vertical-align: middle; } .table a { text-decoration: none; font-weight: 600; }
+.state { border-radius: 5px; padding: 5px 8px; font-size: .67rem; font-weight: 750; background: #e9eef2; color: #43596a; white-space: nowrap; } .state-SUCCEEDED, .state-delivered { color: #086450; background: #ddf6eb; } .state-FAILED { color: #aa3444; background: #fde8eb; } .state-RETRY_WAIT { color: #946217; background: #fff1d8; } .state-PROCESSING, .state-shipped { color: #325eae; background: #e6efff; }
+.mono, code, pre { font-family: ui-monospace, Consolas, monospace; font-size: .82rem; } pre { background: #142a35; color: #c9eee2; border-radius: 8px; padding: 22px; white-space: pre-wrap; overflow-wrap: anywhere; } .break { overflow-wrap: anywhere; }
+.empty { padding: 40px 16px; text-align: center; color: var(--muted); } .form-label { font-size: .82rem; font-weight: 650; } .help { font-size: .8rem; color: var(--muted); } .auth-shell { max-width: 440px; margin: 8vh auto; padding: 20px; } .auth-shell .brand { color: var(--ink); display: block; margin-bottom: 28px; }
+.htmx-indicator { opacity: 0; } .htmx-request .htmx-indicator, .htmx-request.htmx-indicator { opacity: 1; } .htmx-request button[type=submit] { opacity: .6; pointer-events: none; }
+.pagination-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 18px; color: var(--muted); font-size: .8rem; }
+.skip-link { position: absolute; top: -60px; background: white; padding: 10px; z-index: 99; } .skip-link:focus { top: 0; }
+@media (max-width: 900px) { .sidebar { width: 190px; } .workspace { margin-left: 190px; padding: 25px; } }
+@media (max-width: 650px) { .sidebar { position: relative; width: auto; padding: 18px; } .sidebar nav { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 4px; } .sidebar nav a { padding: 6px 10px; margin: 0; font-size: .8rem; } .sidebar-footer { display: none; } .workspace { margin-left: 0; padding: 22px 16px; } .topline { padding-bottom: 15px; margin-bottom: 25px; } .panel { padding: 18px; } h1 { font-size: 1.7rem; } }

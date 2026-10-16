@@ -1,0 +1,15 @@
+# Explicit development-only settings. Never use this override in production.
+x-demo: &demo
+  DEMO_ENABLED: "true"
+  RETRY_BASE_SECONDS: "0.2"
+  RETRY_MAX_SECONDS: "1"
+  LEASE_SECONDS: "5"
+  DISCOVERY_SECONDS: "1"
+
+services:
+  web:
+    environment: *demo
+  worker:
+    environment: *demo
+  beat:
+    environment: *demo

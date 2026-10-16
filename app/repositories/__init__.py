@@ -1,0 +1,1 @@
+"""Reusable tenant-scoped queries."""

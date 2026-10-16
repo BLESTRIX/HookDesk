@@ -1,0 +1,47 @@
+[project]
+name = "hookdesk"
+version = "0.1.0"
+description = "A durable, multi-tenant webhook inbox for shipment events"
+requires-python = "==3.12.*"
+dependencies = [
+    "alembic==1.20.0",
+    "argon2-cffi==25.1.0",
+    "celery[redis]==5.6.3",
+    "cryptography==50.0.2",
+    "email-validator==2.3.0",
+    "fastapi==0.143.2",
+    "httpx==0.28.1",
+    "jinja2==3.1.6",
+    "psycopg[binary]==3.3.6",
+    "pydantic==2.14.1",
+    "pydantic-settings==2.16.0",
+    "python-dotenv==1.2.4",
+    "python-multipart==0.0.32",
+    "sqlalchemy==2.1.4",
+    "uvicorn[standard]==0.54.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest==9.1.1",
+    "pytest-cov==7.1.0",
+    "ruff==0.17.1",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = [".local"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501", "B008"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+markers = ["integration: requires PostgreSQL", "concurrency: uses separate PostgreSQL connections"]
+
+[tool.coverage.run]
+source = ["app"]
+

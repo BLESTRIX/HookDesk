@@ -1,0 +1,43 @@
+name: checks
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17.6-alpine
+        env:
+          POSTGRES_USER: hookdesk
+          POSTGRES_PASSWORD: ci-only-password
+          POSTGRES_DB: hookdesk_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U hookdesk -d hookdesk_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+      redis:
+        image: redis:7.4.5-alpine
+        ports: ["6379:6379"]
+    env:
+      DATABASE_URL: postgresql+psycopg://hookdesk:ci-only-password@localhost:5432/hookdesk_test
+      TEST_DATABASE_URL: postgresql+psycopg://hookdesk:ci-only-password@localhost:5432/hookdesk_test
+      REDIS_URL: redis://localhost:6379/0
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.12.10"
+          python-version: "3.12"
+          enable-cache: true
+      - run: uv sync --frozen
+      - name: Ephemeral test encryption key
+        run: echo "ENCRYPTION_KEY=$(uv run python -c 'from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())')" >> "$GITHUB_ENV"
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run alembic upgrade head
+      - run: uv run alembic check
+      - run: uv run pytest --cov=app --cov-report=term-missing --cov-report=xml
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage.xml

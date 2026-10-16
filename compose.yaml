@@ -1,0 +1,65 @@
+name: hookdesk
+x-app: &app
+  image: hookdesk:0.1.0
+  build: .
+  env_file: .env
+  environment:
+    DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-hookdesk}:${POSTGRES_PASSWORD:?Run python scripts/configure.py}@postgres:5432/${POSTGRES_DB:-hookdesk}
+    REDIS_URL: redis://redis:6379/0
+  init: true
+  restart: unless-stopped
+
+services:
+  postgres:
+    image: postgres:17.6-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-hookdesk}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run python scripts/configure.py}
+      POSTGRES_DB: ${POSTGRES_DB:-hookdesk}
+    ports: ["127.0.0.1:5432:5432"]
+    volumes: ["postgres-data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  redis:
+    image: redis:7.4.5-alpine
+    ports: ["127.0.0.1:6379:6379"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  migrate:
+    <<: *app
+    restart: "no"
+    command: ["uv", "run", "--frozen", "--no-dev", "alembic", "upgrade", "head"]
+    depends_on:
+      postgres: {condition: service_healthy}
+  web:
+    <<: *app
+    command: ["uv", "run", "--frozen", "--no-dev", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--no-access-log"]
+    ports: ["127.0.0.1:8000:8000"]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+    healthcheck:
+      test: ["CMD", "uv", "run", "--frozen", "--no-dev", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/ready')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  worker:
+    <<: *app
+    command: ["uv", "run", "--frozen", "--no-dev", "celery", "-A", "app.tasks.celery_app:celery", "worker", "--loglevel=INFO", "--concurrency=2"]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+      redis: {condition: service_healthy}
+  beat:
+    <<: *app
+    command: ["uv", "run", "--frozen", "--no-dev", "celery", "-A", "app.tasks.celery_app:celery", "beat", "--loglevel=INFO", "--schedule=/tmp/hookdesk-beat"]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+      redis: {condition: service_healthy}
+
+volumes:
+  postgres-data:

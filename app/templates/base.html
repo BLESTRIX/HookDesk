@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="csrf-token" content="{{ csrf }}"><title>{% block title %}HookDesk{% endblock %} · HookDesk</title>
+<link rel="stylesheet" href="/static/vendor/bootstrap.min.css"><link rel="stylesheet" href="/static/app.css">
+<script src="/static/vendor/htmx.min.js" defer></script><script src="/static/app.js" defer></script></head>
+<body><a href="#main" class="skip-link">Skip to content</a><aside class="sidebar">
+<a class="brand" href="/"><span class="brand-mark">h</span>hookdesk<span class="help"> /</span></a>
+<nav aria-label="Main navigation">{% for href,label in [('/', 'Overview'),('/sources','Sources'),('/events','Event inbox'),('/failed','Failed events'),('/shipments','Shipments'),('/notifications','Notifications'),('/audit','Audit history')] %}
+<a href="{{ href }}" class="{% if path == href or (href != '/' and path.startswith(href + '/')) %}active{% endif %}">{{ label }}</a>{% endfor %}</nav>
+<div class="sidebar-footer"><div class="mb-2">{{ principal.email }}</div><div>{{ principal.role }} · shipment-v1</div></div></aside>
+<main class="workspace" id="main"><div class="topline"><span>{{ organization.name }} <span class="ms-2 badge text-bg-light">Workspace</span></span>
+<form action="/logout" method="post"><input type="hidden" name="csrf_token" value="{{ csrf }}"><button class="btn btn-sm btn-outline-secondary">Sign out</button></form></div>
+<div id="errors" aria-live="polite"></div>{% block content %}{% endblock %}
+<footer class="help mt-5">HookDesk · Durable webhook operations <span class="float-end">All times UTC</span></footer></main></body></html>

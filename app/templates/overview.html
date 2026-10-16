@@ -1,0 +1,7 @@
+{% extends 'base.html' %}{% block title %}Overview{% endblock %}{% block content %}
+<p class="eyebrow">Organization overview</p><h1>Every event. A clear outcome.</h1><p class="subtitle">Follow deliveries from acceptance to recovery.</p>
+<div id="metrics" hx-get="/" hx-trigger="every 10s" hx-swap="innerHTML">{% include 'partials/metrics.html' %}</div>
+<div class="panel mt-4"><div class="d-flex justify-content-between mb-3"><h2>Latest deliveries</h2><a href="/events" class="help">View inbox →</a></div>
+{% set result = recent %}{% include 'partials/event_table.html' %}</div>
+<div class="panel"><h2>Built for recovery</h2><p class="help mb-0">Accepted events are saved in PostgreSQL before acknowledgment. Temporary errors retry automatically. Failed events keep their original payload and full attempt history for safe manual replay.</p></div>
+{% endblock %}
